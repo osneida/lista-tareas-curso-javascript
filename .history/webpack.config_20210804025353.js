@@ -1,29 +1,42 @@
+
 const HtmlWebPackPlugin       = require('html-webpack-plugin'); 
 const MiniCssExtractPlugin    = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const MinifyPlugin            = require('babel-minify-webpack-plugin');
-const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
+const path = require('path');
 
 module.exports = {
-    mode: 'production',
+  mode: "development",
+  entry: './src/index.js',
+  output: {
+    clean: true,
+    path: path.resolve(__dirname, './dist'),
+    filename: 'index_bundle.js'
+  },
+  plugins:  [
+    new HtmlWebPackPlugin({
+        template: './src/index.html',
+        filename: './index.html'
+    }),
+    new MiniCssExtractPlugin({
+        filename: '[name].css',
+        ignoreOrder: false
+    })
+]
+};
+
+
+
+
+
+
+
+module.exports = {
+    mode: 'development',
     optimization: {
         minimizer: [ new OptimizeCssAssetsPlugin() ]
     },
-    output: {
-        filename: 'main.[contentHash].js'
-    },
     module: {
         rules: [
-            {
-                test: /\.m?js$/,
-                exclude: /node_modules/,
-                use: {
-                  loader: "babel-loader",
-                  options: {
-                    presets: ['@babel/preset-env']
-                  }
-                }
-              },
             {
                 test: /\.css$/,
                 exclude: /styles\.css$/,
@@ -68,11 +81,9 @@ module.exports = {
             filename: './index.html'
         }),
         new MiniCssExtractPlugin({
-            filename: '[name].[contentHash].css',
+            filename: '[name].css',
             ignoreOrder: false
-        }),
-        new MinifyPlugin(),
-        new CleanWebpackPlugin(),
+        })
     ]
 
 }
